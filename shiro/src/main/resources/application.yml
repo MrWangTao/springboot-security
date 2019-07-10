@@ -1,0 +1,13 @@
+com:
+  xt:
+    legend:
+      filters:
+        login: /login
+        logout: /logout
+        anon:
+          - /login
+          - /logout
+          - /static/**
+        authc:
+          - /**
+
