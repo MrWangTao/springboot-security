@@ -32,12 +32,16 @@ public class LoginController {
             result = "OK";
         } catch (UnknownAccountException e) {
             //账号不存在和下面密码错误一般都合并为一个账号或密码错误，这样可以增加暴力破解难度
+            e.printStackTrace();
             result = "账号不存在";
         } catch (DisabledAccountException e) {
+            e.printStackTrace();
             result = "账号未启用！";
         } catch (IncorrectCredentialsException e) {
+            e.printStackTrace();
             result = "密码错误！";
         } catch (Throwable e) {
+            e.printStackTrace();
             result = "未知错误！";
         }
         return result;
@@ -63,5 +67,23 @@ public class LoginController {
         subject.logout();
         return "logout success";
     }
+
+
+    /*public static void main(String[] args) {
+        System.out.println(test());
+    }
+
+    private static int test() {
+        int i = 111;
+        try {
+            return i;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("finally");
+            i = 222;
+        }
+        return i;
+    }*/
 
 }

@@ -1,15 +1,20 @@
 package com.xt.legend.security.shiro.config;
 
+import com.xt.legend.security.shiro.filter.ReturnJsonFilter;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -79,6 +84,8 @@ public class ShiroConfig {
         ShiroFilterFactoryBean factory = new ShiroFilterFactoryBean();
         factory.setSecurityManager(securityManager);
         factory.setLoginUrl("/login");
+        Map<String, Filter> filters = factory.getFilters();
+        filters.put("authc", new ReturnJsonFilter());
         // 过滤器链
         // 注意此处使用的是LinkedHashMap，是有顺序的，shiro会按从上到下的顺序匹配验证，匹配了就不再继续验证
         // 所以上面的url要苛刻，宽松的url要放在下面，尤其是"/**"要放到最下面，如果放前面的话其后的验证规则就没作用了
@@ -111,11 +118,23 @@ public class ShiroConfig {
     public LegendWebHeaderSessionManager legendWebSessionManager() {
         LegendWebHeaderSessionManager sessionManager = new LegendWebHeaderSessionManager();
         // 自定义SessionDAO
-        // sessionManager.setSessionDAO(legendSessionDAO());
+         sessionManager.setSessionDAO(legendSessionDAO()); // 设置SessionDao
+         sessionManager.setDeleteInvalidSessions(true);// 删除过期的session
+         sessionManager.setGlobalSessionTimeout(3600000);
         // 自定义cache
         // sessionManager.setCacheManager(legendCacheManager());
         return sessionManager;
     }
+
+    /**
+     * Shiro-Redis 集成
+     */
+    /*@Bean
+    public RedisSessionDAO redisSessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(new RedisManager());
+        return redisSessionDAO;
+    }*/
 
     /**
      * 自定义SessionDAO
@@ -123,8 +142,9 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public LegendSessionDAO legendSessionDAO() {
+    public SessionDAO legendSessionDAO() {
         return new LegendSessionDAO();
+//        return new MyRedisSessionDAO();
     }
 
     @Bean

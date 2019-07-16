@@ -180,7 +180,7 @@ Shiro还包含了一些其他功能以支持不同的应用环境，其中：
     | anon        | org.apache.shiro.web.filter.authc.AnonymousFilter                |                            |
     | authc       | org.apache.shiro.web.filter.authc.FormAuthenticationFilter       | 可以自己实现自定的验证方式，如：手机号验证，验证码等 |
     | authcBasic  | org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter  |                            |
-    | perms       | org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter |                            |
+    | perms       | org.apache.shiro.web.https://github.com/MrWangTao/springboot-security.gitfilter.authz.PermissionsAuthorizationFilter |                            |
     | port        | org.apache.shiro.web.filter.authz.PortFilter                     |                            |
     | rest        | org.apache.shiro.web.filter.authz.HttpMethodPermissionFilter     |                            |
     | roles       | org.apache.shiro.web.filter.authz.RolesAuthorizationFilter       |                            |
