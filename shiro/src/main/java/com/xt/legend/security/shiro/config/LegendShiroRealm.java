@@ -2,14 +2,20 @@ package com.xt.legend.security.shiro.config;
 
 import com.xt.legend.security.shiro.bean.User;
 import com.xt.legend.security.shiro.util.CommonUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
 import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -45,6 +51,16 @@ public class LegendShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String username =  (String) authenticationToken.getPrincipal();
+        //处理session，实现同一时间只能在一个地方登录
+        /*DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
+        DefaultWebSessionManager sessionManager = (DefaultWebSessionManager)securityManager.getSessionManager();
+        Collection<Session> sessions = sessionManager.getSessionDAO().getActiveSessions();//获取当前已登录的用户session列表
+        for(Session session:sessions){
+            //清除该用户以前登录时保存的session
+            if(username.equals(String.valueOf(session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY)))) {
+                sessionManager.getSessionDAO().delete(session);
+            }
+        }*/
         char[] credentials = (char[]) authenticationToken.getCredentials();
         if (StringUtils.isEmpty(username)) {
             throw new UnknownAccountException("unknown account");
